@@ -1,9 +1,21 @@
+
+/*
+ * This is a prototype using swing components for the controlls and awt for the
+ * painting. This file st
+ * 
+ * 
+ * Written by Leon Liefting (aka Leejjon) and Richard Bos (aka Shadowing) for the
+ * fortress project of the freegamedev community in 2009
+ * 
+ * For any questions about the code feel free to e-mail leejjon@gmail.com or 
+ * richard_bos01@hotmail.com
+ */
+
 package launcher;
 
 import java.awt.Color;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.MouseListener;
 import java.util.List;
 
 import javax.swing.BorderFactory;
@@ -24,7 +36,6 @@ import classes.Unit;
 
 public class LaunchGui 
 {
-	
 	private static JFrame StartFrame;
 	public static MainPanel Main;
 	private static JMenuBar MenuBar;
@@ -41,8 +52,6 @@ public class LaunchGui
 	private static JTextArea TxtMapName;
 	private static JLabel LblName;
 	private static JLabel LblError;
-	
-	
 	
 	public static void main(String[] args) 
 	{	
@@ -76,7 +85,6 @@ public class LaunchGui
         cbCoords = new JCheckBoxMenuItem("Coordinates on");
         cbCoords.setSelected(true);
         
-        
         // Creating the menu's
 		MenuMap = new JMenu("Map");
 		MenuMap.add(MINewGame);
@@ -89,12 +97,12 @@ public class LaunchGui
 		MenuBar.add(MenuMap);
 		MenuBar.add(MenuView);
 		
-		
+		// Start up the main panel
 		Main = new MainPanel(true, true);
 		
+		// Adding the menu and mainpanel to the Jframe
 		StartFrame.add(Main);
 		StartFrame.setJMenuBar(MenuBar);
-		
 		
 		// Listens on the menu items
 		ActionListener actionlistener = new ActionListener(  ) {
@@ -139,6 +147,7 @@ public class LaunchGui
         MINewGame.addActionListener(actionlistener);
 	}
 	
+	// The new temporarily jframe for creating a new map
 	private static void newMap()
 	{
 		// Create a JFrame
@@ -158,10 +167,17 @@ public class LaunchGui
 		TxtMapName.setSize(80, 20);
 		TxtMapName.setBorder(BorderFactory.createLineBorder(Color.black));
 		
+		// Labels
 		LblName = new JLabel();
 		LblName.setLocation(5,10);
 		LblName.setText("Name:");
 		LblName.setSize(40,15);
+		
+		LblError = new JLabel();
+		LblError.setVisible(false);
+		LblError.setForeground(Color.red);
+		LblError.setLocation(5,100);
+		LblError.setSize(200,20);
 		
 		LblX = new JLabel();
 		LblX.setLocation(5,36);
@@ -173,6 +189,7 @@ public class LaunchGui
 		LblY.setText("Width");
 		LblY.setSize(40,15);
 		
+		// Spinner input boxes
 		SpinX = new JSpinner();
 		SpinX.setLocation(45,35);
 		SpinX.setSize(80,15);
@@ -185,16 +202,11 @@ public class LaunchGui
 		SpinY.setBorder(BorderFactory.createLineBorder(Color.black));
 		SpinY.setValue(8);
 		
+		// The newgame button
 		BtnNewGame = new JButton();
 		BtnNewGame.setLocation(5, 80);
 		BtnNewGame.setSize(125,20);
 		BtnNewGame.setText("Create map");
-		
-		LblError = new JLabel();
-		LblError.setVisible(false);
-		LblError.setForeground(Color.red);
-		LblError.setLocation(5,100);
-		LblError.setSize(200,20);
 		
 		popupPanel.add(BtnNewGame);
 		popupPanel.add(LblX);
@@ -205,7 +217,7 @@ public class LaunchGui
 		popupPanel.add(TxtMapName);
 		popupPanel.add(LblError);
 		
-		
+		// Creates the map
 		BtnNewGame.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent event) 
             {
@@ -216,7 +228,8 @@ public class LaunchGui
             	int y = Integer.parseInt(SpinY.getValue().toString());
                 if ((x > 1) && (y > 1))
                 {
-                	Map newMap = new Map(mapName, x, y, "Grass"); //
+                	// Create a new map, create a unit
+                	Map newMap = new Map(mapName, x, y, "Grass"); 
                 	Main.setCurrentMap(newMap);
                 	List<Unit> myUnits = newMap.getMapUnits();
                 	Unit myUnit = new Unit(350, 75, "Archer",Unit.Run);
