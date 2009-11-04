@@ -57,7 +57,6 @@ public class Map
 		
 			//Order the list so the repainting goes in the right order
 			List <Unit> myOrderdList = new ArrayList<Unit>();
-			List <Unit> myTmpList = new ArrayList<Unit>();
 			myOrderdList.add(mapUnits.get(0));
 			int Index = 0;
 			for(int x = 1; x < mapUnits.size(); x++){
@@ -87,6 +86,30 @@ public class Map
 		this.mapObjects = mapObjects;
 	}
 	public List<MapObject> getMapObjects() {
+		
+		if(mapObjects.size() > 1){
+			
+			//Order the list so the repainting goes in the right order
+			List <MapObject> myOrderdList = new ArrayList<MapObject>();
+			myOrderdList.add(mapObjects.get(0));
+			int Index = 0;
+			for(int x = 1; x < mapObjects.size(); x++){
+				for(int y = 0; y < myOrderdList.size(); y++){
+					if(mapObjects.get(x).getY() < myOrderdList.get(y).getY())
+					{
+						Index = y;
+						//Exit for
+						y = myOrderdList.size();
+					}
+					else
+						Index = myOrderdList.size();
+				}
+				myOrderdList.add(Index, mapObjects.get(x));
+			}
+
+			return myOrderdList;
+		}
+		else
 		return mapObjects;
 	}
 }

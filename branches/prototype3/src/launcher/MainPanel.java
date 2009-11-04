@@ -172,7 +172,7 @@ public class MainPanel extends JPanel implements MouseListener
 						}
 						if (coordinates == true)
 						{
-							String coord = (x+1) + "," + (y+1);
+							String coord = (x) + "," + (y);
 							g.setColor(Color.WHITE);
 							
 							// the -8 and +3 are to position the coordinate in the middle of the tile
@@ -364,17 +364,17 @@ public class MainPanel extends JPanel implements MouseListener
 				for(int i = 0; i < currentMap.getMapObjects().size(); i++)
 				{
 					MapObject current = currentMap.getMapObjects().get(i);
-					if (current.getType() == "TowerBase")
+					if (current.getType() == "Tower")
 					{
+						int nextY = current.getY();
 						g.drawImage(TowerBase,current.getX(),current.getY(), null);
-					}
-					else if (current.getType() == "TowerStem")
-					{
-						g.drawImage(TowerStem,current.getX(),current.getY(), null);
-					}
-					else if (current.getType() == "TowerTop")
-					{
-						g.drawImage(TowerTop,current.getX(),current.getY(), null);
+						for (int j = 0; j < current.getHeight(); j++)
+						{
+							nextY -= 48;
+							g.drawImage(TowerStem,current.getX(),nextY,null);
+						}
+						nextY -= 48;
+						g.drawImage(TowerTop,current.getX(),nextY,null);
 					}
 				}
 			}
@@ -717,9 +717,10 @@ public class MainPanel extends JPanel implements MouseListener
 		LblHeight.setSize(20,10);
 		
 		LblError = new JLabel();
-		LblError.setLocation(200,90);
+		LblError.setLocation(20,90);
 		LblError.setSize(50,15);
 		LblError.setForeground(Color.RED);
+		LblError.setVisible(false);
 		
 		SpinX = new JSpinner();
 		SpinX.setLocation(20,16);
@@ -796,7 +797,7 @@ public class MainPanel extends JPanel implements MouseListener
 					else if(listObjects.getSelectedIndex() == Tower)
 					{
 						// Create a tower
-						if(x > 0 && y > 0 && (height > 0 && height < 11))
+						if(x > -1 && y > -1 && (height > 0 && height < 11) && (x < currentMap.getMapInfo().get(0).size() && y < currentMap.getMapInfo().size()))
 						{
 						    int screenX;
 						    int screenY;
@@ -814,35 +815,37 @@ public class MainPanel extends JPanel implements MouseListener
 						    screenX = tempX + (x * (tilewidth / 2));
 						    
 						    // The same goes for the y coord
-						    tempY = (startY - tileheight) + (y * (tileheight / 2));
+						    tempY = (startY) + (y * (tileheight / 2));
 						    screenY = tempY + (x * (tileheight / 2));
 						    
-						    // Create the bottom, set this map object stuck to a tile
-						    MapObject towerBase = new MapObject(screenX, screenY,"TowerBase");
-						    if (currentMap.getMapInfo().get(y).get(x) != null)
+						    if (currentMap.getMapInfo().get(0).size() > x && currentMap.getMapInfo().size() > y)
 						    {
-							    currentMap.getMapInfo().get(y).get(x).setMapobject(towerBase); 						    List<MapObject> mapObjects = currentMap.getMapObjects();
-							    mapObjects.add(towerBase);
-							    
-							    // Add middlepieces
-							    for (int i = 1; i < height; i++)
+							    if (currentMap.getMapInfo().get(y).get(x).getMapobject() == null)
 							    {
-							    	screenY -= 48;
-							    	MapObject middlePiece = new MapObject(screenX, screenY, "TowerStem");
-							    	mapObjects.add(middlePiece);
+							    	// Create the bottom, set this map object stuck to a tile
+								    MapObject tower = new MapObject(screenX, screenY, height,"Tower");
+							    	currentMap.getMapInfo().get(y).get(x).setMapobject(tower); 						    
+							    	List<MapObject> mapObjects = currentMap.getMapObjects();
+								    mapObjects.add(tower);
+								    currentMap.setMapObjects(mapObjects);
 							    }
-							    // Add the top
-							    screenY -= 96;
-							    MapObject top = new MapObject(screenX,screenY,"TowerTop");
-							    mapObjects.add(top);
-							    // Add the new objects to the map
-							    currentMap.setMapObjects(mapObjects);
+							    else
+							    {
+							    	LblError.setText("There's already a tower here.");
+							    	LblError.setVisible(true);
+							    }
 						    }
 						    else
 						    {
-						    	LblError.setText("There's already an object on this spot");
+						    	LblError.setText("Fill in a valid coordinate.");
+						    	LblError.setVisible(true);
 						    }
 						}
+						else
+					    {
+					    	LblError.setText("Fill in a valid coordinate.");
+					    	LblError.setVisible(true);
+					    }
 					}
 				}
 			}
