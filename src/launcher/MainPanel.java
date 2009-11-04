@@ -181,17 +181,7 @@ public class MainPanel extends JPanel implements MouseListener
 							g.drawString("Y", 100, 100);
 							g.drawString("X", 700, 100);
 						}
-					}
-					/* Now busy to replace this, if the app works and this is still
-					 * commented I've forgotten to remove it.
-					if(currentMap.getMapInfo().get(y).get(x).getMapobject() != null)
-					{
-						MapObject currentMapObject = currentMap.getMapInfo().get(y).get(x).getMapobject();
-						if(currentMapObject.getType() == "Tower")
-						{
-							
-						}
-					}*/				
+					}			
 					tempX += (tilewidth / 2);
 					tempY += (tileheight / 2);
 				}
@@ -367,25 +357,24 @@ public class MainPanel extends JPanel implements MouseListener
 				}
 				// finally draw the units
 				g.drawImage(myImageList.get(myUnit.getCurrentSpite() - 1), myUnit.getX() -16 ,myUnit.getY() -26, null);
-				
-				// draw the mapObjects
-				if(currentMap.getMapObjects() != null)
+			}
+			// draw the mapObjects
+			if(currentMap.getMapObjects() != null)
+			{
+				for(int i = 0; i < currentMap.getMapObjects().size(); i++)
 				{
-					for(int i = 0; i < currentMap.getMapObjects().size(); i++)
+					MapObject current = currentMap.getMapObjects().get(i);
+					if (current.getType() == "TowerBase")
 					{
-						MapObject current = currentMap.getMapObjects().get(i);
-						if (current.getType() == "TowerBase")
-						{
-							g.drawImage(TowerBase,current.getX(),current.getY(), null);
-						}
-						else if (current.getType() == "TowerStem")
-						{
-							g.drawImage(TowerStem,current.getX(),current.getY(), null);
-						}
-						else if (current.getType() == "TowerTop")
-						{
-							g.drawImage(TowerTop,current.getX(),current.getY(), null);
-						}
+						g.drawImage(TowerBase,current.getX(),current.getY(), null);
+					}
+					else if (current.getType() == "TowerStem")
+					{
+						g.drawImage(TowerStem,current.getX(),current.getY(), null);
+					}
+					else if (current.getType() == "TowerTop")
+					{
+						g.drawImage(TowerTop,current.getX(),current.getY(), null);
 					}
 				}
 			}
