@@ -3,12 +3,18 @@ package classes;
 public class MapObject {
 	private int x;
 	private int y;
-
+	private int height;
 	private String type;
 
 	public MapObject(int x, int y, String type){
 		this.x = x;
 		this.y = y;
+		this.type = type;
+	}
+	public MapObject(int x, int y, int height, String type){
+		this.x = x;
+		this.y = y;
+		this.height = (height);
 		this.type = type;
 	}
 	public void setX(int x) {
@@ -30,5 +36,8 @@ public class MapObject {
 	public String getType()
 	{
 		return type;
+	}
+	public int getHeight() {
+		return height;
 	}
 }
