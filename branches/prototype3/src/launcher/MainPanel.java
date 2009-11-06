@@ -785,7 +785,7 @@ public class MainPanel extends JPanel implements MouseListener
 						    screenX = tempX + (x * (tilewidth / 2));
 						    
 						    // The same goes for the y coord
-						    tempY = (startY - (tileheight / 2)) + (y * (tileheight / 2));
+						    tempY = (startY + (tileheight / 2)) + (y * (tileheight / 2));
 						    screenY = tempY + (x * (tileheight / 2));
 						    
 							Unit archer = new Unit(screenX, screenY, "Archer",Unit.Idle);
