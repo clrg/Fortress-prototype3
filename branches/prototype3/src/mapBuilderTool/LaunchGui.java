@@ -27,7 +27,7 @@ public class LaunchGui
 		{
             public void run() 
             {
-                startUp();
+            	startUp();
             }
         });
 	}
