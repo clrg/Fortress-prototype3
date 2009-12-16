@@ -183,7 +183,7 @@ public class Map
 		towerbaseSprite = GameData.getImage("images/squaretower/base.png");
 		towerstemSprite = GameData.getImage("images/squaretower/stem.png");
 		towertopSprite = GameData.getImage("images/squaretower/top.png");
-		hpbar100 = GameData.getImage("images/hpbar/full.png");
+		hpbar100 = GameData.getImage("images/full.png");
 		
 		spritesArcherIdleEast = new ArrayList<Image>();
 		spritesArcherIdleNorth = new ArrayList<Image>();
