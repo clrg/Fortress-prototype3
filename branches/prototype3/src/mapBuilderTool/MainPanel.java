@@ -1,9 +1,15 @@
 package mapBuilderTool;
 
+import gameCore.Building;
+import gameCore.GameData;
 import gameCore.Map;
+import gameCore.MapObject;
+import gameCore.Tile;
+import gameCore.Unit;
 
 import java.awt.Color;
 import java.awt.Graphics;
+import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
@@ -105,14 +111,7 @@ public class MainPanel extends JPanel implements MouseListener
 	{
 		if(currentMap != null)
 		{
-			// Selecting a mapobject
-			int leftMouseKey = 1;
-			if(click.getButton() == leftMouseKey)
-			{
-				// First deselect the current object.
-				currentMap.deselectMapObject();
-				currentMap.selectMapObject(click.getX(),click.getY());
-			}
+			currentMap.click(new Point(click.getX(),click.getY()), click.getButton());
 		}
 	}
 }

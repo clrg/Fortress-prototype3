@@ -1,6 +1,12 @@
 	package gameCore;
 
 	public class Unit extends MapObject {
+		// static variables for the only current unit, an archer
+		public final static int archerLength = 32;
+		public final static int archerHeight = 32;
+		public final static int archerSprites = 37;
+		
+		// variables
 		public int direction = 0;
 		private final int AbnormalityX = 32; 
 		private final int AbnormalityY = -1;

@@ -4,6 +4,7 @@
 	{
 		private int height;
 		public final static int towerheight = 48;
+		public final static int towerlength = 96;
 		public Building(int x, int y, int height) {
 			super("Building"); // Do the constructor of the superclass
 			this.height = height;

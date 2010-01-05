@@ -11,9 +11,6 @@ public class GameData {
 	public final static int startX = 350;
 	public final static int startY = 10;
 	public final static int maxMapHeight = 10;
-	public final static int archerLength = 32;
-	public final static int archerHeight = 32;
-	public final static int archerSprites = 37;
 	public final static int dirE = 0;
 	public final static int dirW = 1;
 	public final static int dirS = 2;
