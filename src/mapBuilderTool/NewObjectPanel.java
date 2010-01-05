@@ -5,6 +5,7 @@ import gameCore.Map;
 import gameCore.Unit;
 
 import java.awt.Color;
+import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
@@ -133,6 +134,7 @@ public class NewObjectPanel extends JPanel implements ActionListener
 					    
 						// Add the mapobject to a tile
 						tempMap.getMapTiles().get(y).get(x).setMapobject(archer);
+						tempMap.ClosedTilesList.add(new Point(x,y));
 					}
 					else if(listObjects.getSelectedValue() == "Tower")
 					{   
@@ -141,6 +143,7 @@ public class NewObjectPanel extends JPanel implements ActionListener
 					    
 					    // Add the mapobject to a tile
 					    tempMap.getMapTiles().get(y).get(x).setMapobject(tower);
+					    tempMap.ClosedTilesList.add(new Point(x,y));
 					}
 					// Update the map
 					main.currentMap = tempMap;

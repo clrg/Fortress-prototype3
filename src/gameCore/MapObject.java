@@ -9,14 +9,7 @@ public class MapObject
 	{
 		this.type = type;
 	}
-	private boolean selected;
-	public boolean isSelected() {
-		return selected;
-	}
-
-	public void setSelected(boolean selected) {
-		this.selected = selected;
-	}
+	public boolean selected;
 	public int calcScreenX(int x, int y, int abnormality)
 	{
 		// First calculates how much the y input affects the final x coord

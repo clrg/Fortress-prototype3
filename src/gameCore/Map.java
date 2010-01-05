@@ -4,6 +4,7 @@ package gameCore;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Image;
+import java.awt.Point;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -12,6 +13,10 @@ public class Map
 	// Objects
 	private List<List<Tile>> mapTiles;
 	public MapObject selectedMapObject;
+	// This is used for pathfinding to see what tiles can't be
+	public Point selectedPosition = new Point((int)Double.MAX_VALUE,(int)Double.MAX_VALUE);
+	public List<Point> OpenTilesList = new ArrayList<Point>();
+	public List<Point> ClosedTilesList = new ArrayList<Point>();
 	
 	// Variables
 	public boolean gridview = true;
@@ -32,6 +37,7 @@ public class Map
 	private Image towerstemSprite;
 	private Image towertopSprite;
 	private Image hpbar100;
+	private Image bighpbar100;
 	
 	public Map(String mapName, int mapX, int mapY, String terrain) 
 	{
@@ -55,6 +61,7 @@ public class Map
         	{
         		Tile myTile = new Tile();
         		mapXlist.add(x,myTile);
+        		OpenTilesList.add(new Point(x,y));
         	}
         	mapTiles.add(mapXlist);
         }
@@ -63,35 +70,91 @@ public class Map
 	public void deselectMapObject()
 	{
 		// Set a non existing mapobject as selectedmapobject
-		selectedMapObject.setSelected(false);
+		selectedMapObject.selected = false;
 		selectedMapObject = new MapObject("none");
 	}
-	public void selectMapObject(int mouseX, int mouseY)
+	public void click(Point mouseClick, int mousekey)
 	{
-		// Select an object based on the mouse input
-		// First the basic loops all tiles and checks all the mapobjects of all tiles
-		for (int y = 0; y < getMapTiles().size(); y++)
+		int tempX = GameData.startX;
+		int tempY = GameData.startY;
+		
+		// The closest Tile to where you clicked
+		Point closestTile = new Point(0,0);
+		// The distance to the closest tile
+		double closestDistance = Double.MAX_VALUE; 
+		
+		// The ownage map builder to generate coordinates for every 
+    	for (int y = 0; y < getMapTiles().size(); y++)
 	    {
 			for (int x = 0; x < getMapTiles().get(y).size(); x++)
 			{
-				if(getMapTiles().get(y).get(x).mapobject.type == "Unit")
+				int posX = tempX + (Tile.tilewidth / 2);
+				int posY = tempY + (Tile.tileheight / 2);
+				
+				double diffX = (double) makePositive(posX-mouseClick.x);
+				double diffY = (double) makePositive(posY-mouseClick.y);
+				double tempDistance = (Math.sqrt((diffX * diffX)+(diffY * diffY)));
+				if(tempDistance <= closestDistance)
 				{
-					// Check on if the click is on the archers sprite 
-					if((mouseX > getMapTiles().get(y).get(x).mapobject.rawX &&
-						mouseX < getMapTiles().get(y).get(x).mapobject.rawX + GameData.archerLength) &&
-						(mouseY > (getMapTiles().get(y).get(x).mapobject.rawY) &&
-						mouseY < getMapTiles().get(y).get(x).mapobject.rawY + GameData.archerHeight) )
-					{
-						getMapTiles().get(y).get(x).mapobject.setSelected(true);
-						selectedMapObject = getMapTiles().get(y).get(x).mapobject;
-					}
+					closestDistance = tempDistance;
+					closestTile = new Point(x,y);
 				}
-				if(getMapTiles().get(y).get(x).mapobject.type == "Building")
-				{
-					// Here the code on how to select a tower
-				}
-			}	
+			
+				tempX += (Tile.tilewidth / 2);
+				tempY += (Tile.tileheight / 2);
+			}
+			tempX = (GameData.startX - ((y+1) * (Tile.tilewidth / 2)));
+			tempY = (GameData.startY + ((y+1) * (Tile.tileheight / 2)));
+    	}
+    	// Selecting a mapobject
+		int leftMouseKey = 1;
+		int rightMouseKey = 2;
+		
+		if(mousekey == leftMouseKey)
+		{
+			// First deselect the current object.
+			deselectMapObject();
+			selectMapObject(closestTile);
+			selectedPosition = closestTile;
 		}
+		else if(mousekey == rightMouseKey)
+		{
+			// Select a position to walk to
+			selectPositionToMoveTo(closestTile);
+		}
+	}
+	public void selectMapObject(Point selectedPos)
+	{
+		selectedMapObject = getMapTiles().get(selectedPos.y).get(selectedPos.x).mapobject;
+		getMapTiles().get(selectedPos.y).get(selectedPos.x).mapobject.selected = true;
+	}
+	public void selectPositionToMoveTo(Point Endpoint)
+	{
+		// The start and end points in tile coordinates
+		Point Start = selectedPosition;
+		Point End = Endpoint;
+		
+		// The acual tiles
+		Tile startTile = getMapTiles().get(Start.y).get(Start.x);
+		Tile endTile = getMapTiles().get(End.y).get(End.x);
+		
+		// The screen coordinates of the tiles
+		Point rawStart = new Point(startTile.mapobject.rawX,startTile.mapobject.rawY);
+		Point rawEnd = new Point(endTile.mapobject.rawX,endTile.mapobject.rawY);
+		
+		double diffX = (double) makePositive(rawStart.x - rawEnd.x);
+		double diffY = (double) makePositive(rawStart.y - rawEnd.y);
+		double distance = (Math.sqrt((diffX * diffX)+(diffY * diffY)));
+		
+		
+		
+		/* first calculate the differences between the starting point and the end point
+		int diffX = start.x-end.x;
+		int diffY = start.y-end.y;
+		
+		// Calculate the amount of tiles the unit has to walk
+		int distance = Route.makePositive(diffX) + Route.makePositive(diffY);
+		*/
 	}
 	public void repaint(Graphics g)
 	{
@@ -165,6 +228,10 @@ public class Map
 							}
 						}
 						g.drawImage(towertopSprite,towerX, (towerY - (Building.towerheight*2)),null);
+						if(getMapTiles().get(y).get(x).mapobject.selected == true)
+						{
+							g.drawImage(bighpbar100,towerX,(towerY-Building.towerheight),null);
+						}
 					}
 				}			
 				tempX += (Tile.tilewidth / 2);
@@ -184,18 +251,31 @@ public class Map
 		towerstemSprite = GameData.getImage("images/squaretower/stem.png");
 		towertopSprite = GameData.getImage("images/squaretower/top.png");
 		hpbar100 = GameData.getImage("images/full.png");
+		bighpbar100 = GameData.getImage("images/bigfull.png");
 		
 		spritesArcherIdleEast = new ArrayList<Image>();
 		spritesArcherIdleNorth = new ArrayList<Image>();
 		spritesArcherIdleWest = new ArrayList<Image>();
 		spritesArcherIdleSouth = new ArrayList<Image>();
 		// loop that loads all archer sprites facing to south,east,north and west
-		for (int i = 1; i < GameData.archerSprites; i++)
+		for (int i = 1; i < Unit.archerSprites; i++)
 		{
 			spritesArcherIdleWest.add(GameData.getImage("images/Archer/idle1/idle1_fe_" + Integer.toString(i) + ".png"));
 			spritesArcherIdleEast.add(GameData.getImage("images/Archer/idle1/idle1_fw_" + Integer.toString(i) + ".png"));
 			spritesArcherIdleNorth.add(GameData.getImage("images/Archer/idle1/idle1_fn_" + Integer.toString(i) + ".png"));
 			spritesArcherIdleSouth.add(GameData.getImage("images/Archer/idle1/idle1_fs_" + Integer.toString(i) + ".png"));
+		}
+	}
+	public static int makePositive(int input)
+	{
+		// make them possitive 
+		if(input < 0)
+		{
+			return -input;
+		}
+		else
+		{
+			return input;
 		}
 	}
 	public List<List<Tile>> getMapTiles()
